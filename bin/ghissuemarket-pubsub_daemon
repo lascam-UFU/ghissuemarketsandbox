@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Log file path
+LOGFILE="/var/log/ghissuemarket/ghissuemarket.log"
+
+# Temp file to keep track of messages seen in pubsub
+SEEN_MSGS="/tmp/ghissuemarket_seen.log"
+
+# Create the temp file if it doesn't exist
+touch $SEEN_MSGS
+
+# Subscribe to the PubSub topic in the background
+ipfs pubsub sub ghissuemarket | while read pubsub_msg; do
+    # Extract the message content
+    if ! grep -q "$pubsub_msg" $SEEN_MSGS; then
+        # If this message hasn't been seen, append it to the local log file
+        echo "$pubsub_msg" >> $LOGFILE
+        # Mark the message as seen
+        echo "$pubsub_msg" >> $SEEN_MSGS
+    fi
+done &
+
+# Monitor the local log file for changes and publish new entries
+tail -F $LOGFILE | while read logline; do
+    # If the logline is not already published (to avoid duplicates)
+    if ! grep -q "$logline" $SEEN_MSGS; then
+        # Publish the new logline to the pubsub topic
+        echo "$logline" | ipfs pubsub pub ghissuemarket
+        # Mark the logline as published (seen)
+        echo "$logline" >> $SEEN_MSGS
+    fi
+done

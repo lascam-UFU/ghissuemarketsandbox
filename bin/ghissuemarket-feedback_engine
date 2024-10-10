@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+from llama_index.core import SimpleDirectoryReader, PropertyGraphIndex
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.llms.openai import OpenAI
+from llama_index.core import StorageContext, load_index_from_storage
+
+def main(query):
+    # Configuration
+    data_dir = "/var/log/ghissuemarket"
+    llm_model = "gpt-4o-mini"
+    embed_model = "text-embedding-3-small"
+
+    # Set OpenAI API key
+    openai_key=os.environ.get('OPENAI_API_KEY')
+    print(f"OpenAI API Key: {openai_key}")
+    print(f"OpenAI API Key: {os.environ.get('OPENAI_API_KEY')}")
+    print(f"Data Directory: {data_dir}")
+    print(f"LLM Model: {llm_model}")
+    print(f"Embed Model: {embed_model}")
+
+    # Load documents
+    documents = SimpleDirectoryReader(data_dir).load_data()
+
+    # Create Property Graph Index
+    index = PropertyGraphIndex.from_documents(
+        documents,
+        llm=OpenAI(model=llm_model, access_token=openai_key,temperature=0.1),
+        embed_model=OpenAIEmbedding(model_name=embed_model, access_token=openai_key),
+        show_progress=False,
+    )
+
+    # Save graph (optional)
+    # index.property_graph_store.save_networkx_graph(name="kg.html")
+
+    # Create query engine
+    query_engine = index.as_query_engine(
+        include_text=True,
+    )
+
+    # Perform query
+    response = query_engine.query(query)
+    print(f"Query Response: {str(response)}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run queries on the property graph.")
+    parser.add_argument('query', type=str, help='The query string to execute')
+
+    args = parser.parse_args()
+    main(args.query)
+
