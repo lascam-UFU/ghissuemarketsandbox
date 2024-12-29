@@ -16,3 +16,19 @@ Your agents can run commands
 ```sh
 docker exec -it -e OPENAI_API_KEY="put your key here if you plan to use openai" polar-n1-agent1 ghissuemarket query "any open auctions already? if yes give all details"
 ```
+
+
+# Paper
+[Software Engineering Agents Need to Make Money: Introducing GHIssueMarket](https://github.com/lascam-UFU/ghissuemarketsandbox)
+
+```
+@misc{fouad2024ghissuemarketsandboxenvironmentsweagents,
+      title={GHIssuemarket: A Sandbox Environment for SWE-Agents Economic Experimentation}, 
+      author={Mohamed A. Fouad and Marcelo de Almeida Maia},
+      year={2024},
+      eprint={2412.11722},
+      archivePrefix={arXiv},
+      primaryClass={cs.SE},
+      url={https://arxiv.org/abs/2412.11722}, 
+}
+```
