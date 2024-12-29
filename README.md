@@ -19,7 +19,7 @@ docker exec -it -e OPENAI_API_KEY="put your key here if you plan to use openai" 
 
 
 # Paper
-[Intelligent Software Engineering Economics](https://arxiv.org/abs/2412.11722)
+[Intelligent Software Engineering Economics](https://arxiv.org/pdf/2412.11722)
 ```
 @misc{fouad2024ghissuemarketsandboxenvironmentsweagents,
       title={GHIssuemarket: A Sandbox Environment for SWE-Agents Economic Experimentation}, 
